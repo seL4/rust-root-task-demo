@@ -33,11 +33,8 @@ build-kernel: configure-kernel
 .PHONY: install-kernel
 install-kernel: build-kernel
 	ninja -C $(kernel_build_dir) install
-	install -D -T $(kernel_build_dir)/gen_config/kernel/gen_config.json $(kernel_install_dir)/support/config.json
-	install -D -T $(kernel_build_dir)/kernel.dtb $(kernel_install_dir)/support/kernel.dtb
-	install -D -T $(kernel_build_dir)/gen_headers/plat/machine/platform_gen.yaml $(kernel_install_dir)/support/platform-info.yaml
 
-### Userspace
+### Common Rust definitions
 
 rust_target_path := support/targets
 rust_sel4_target := aarch64-sel4
@@ -45,28 +42,62 @@ rust_bare_metal_target := aarch64-unknown-none
 target_dir := $(build_dir)/target
 cargo_root_dir := $(build_dir)/cargo-root
 
-remote_options := \
-	--git https://gitlab.com/coliasgroup/rust-seL4 \
-	--rev 7240d83b79ff8263e42ee0fd66a15189825dac99
-
-build_std_options := \
-	-Z build-std=core,alloc,compiler_builtins \
-	-Z build-std-features=compiler-builtins-mem
-
 common_env := \
 	RUST_TARGET_PATH=$(abspath $(rust_target_path)) \
 	SEL4_PREFIX=$(abspath $(kernel_install_dir)) \
 
 common_options := \
-	--locked \
-	-Z unstable-options \
-	-Z bindeps \
-	$(build_std_options) \
 	--target-dir $(abspath $(target_dir))
+
+build_std_options := \
+	-Z build-std=core,alloc,compiler_builtins \
+	-Z build-std-features=compiler-builtins-mem
+
+remote_options := \
+	--git https://gitlab.com/coliasgroup/rust-seL4 \
+	--rev 96b27b7ed5c7ad1c53d5b7adca159d3fc5283b9e
+
+### Loader
+
+loader_crate := sel4-loader
+loader := $(cargo_root_dir)/bin/$(loader_crate)
+loader_intermediate := $(build_dir)/$(loader_crate).intermediate
+
+$(loader): $(loader_intermediate)
+
+.INTERMDIATE: $(loader_intermediate)
+$(loader_intermediate):
+	$(common_env) \
+	CC=$(cross_compiler_prefix)gcc \
+		cargo install \
+			$(common_options) \
+			$(build_std_options) \
+			$(remote_options) \
+			--target $(rust_bare_metal_target) \
+			--root $(abspath $(cargo_root_dir)) \
+			--force \
+			$(loader_crate)
+
+loader_cli_crate := sel4-loader-add-payload
+loader_cli := $(cargo_root_dir)/bin/$(loader_cli_crate)
+loader_cli_intermediate := $(build_dir)/$(loader_cli_crate).intermediate
+
+$(loader_cli): $(loader_cli_intermediate)
+
+.INTERMDIATE: $(loader_cli_intermediate)
+$(loader_cli_intermediate):
+	cargo install \
+		$(common_options) \
+		$(remote_options) \
+		--root $(abspath $(cargo_root_dir)) \
+		--force \
+		$(loader_cli_crate)
+
+### Demo
 
 app_crate := example
 app := $(build_dir)/$(app_crate).elf
-app_intermediate := $(build_dir)/app.intermediate
+app_intermediate := $(build_dir)/$(app_crate).intermediate
 
 $(app): $(app_intermediate)
 
@@ -75,32 +106,22 @@ $(app_intermediate):
 	$(common_env) \
 		cargo build \
 			$(common_options) \
-			-p $(app_crate) \
+			$(build_std_options) \
 			--target $(rust_sel4_target) \
-			--out-dir $(build_dir)
+			--out-dir $(build_dir) \
+			-p $(app_crate)
 
-loader_crate := loader
-loader := $(cargo_root_dir)/bin/$(loader_crate)
-loader_intermediate := $(build_dir)/loader.intermediate
-loader_config := loader-config.json
+image := $(build_dir)/image.elf
 
-$(loader): $(loader_intermediate)
-
-.INTERMDIATE: $(loader_intermediate)
-$(loader_intermediate): $(app)
-	$(common_env) \
-	CC=$(cross_compiler_prefix)gcc \
-	SEL4_APP=$(abspath $(app)) \
-	SEL4_LOADER_CONFIG=$(abspath $(loader_config)) \
-		cargo install \
-			$(common_options) \
-			loader \
-			$(remote_options) \
-			--target $(rust_bare_metal_target) \
-			--root $(abspath $(cargo_root_dir))
+$(image): $(app) $(loader) $(loader_cli)
+	$(loader_cli) \
+		--loader $(loader) \
+		--sel4-prefix $(kernel_install_dir) \
+		--app $(app) \
+		-o $@
 
 .PHONY: run
-run: $(loader)
+run: $(image)
 	qemu-system-aarch64 \
 		-machine virt,virtualization=on \
 		-cpu cortex-a57 -smp 2 -m 1024 \
