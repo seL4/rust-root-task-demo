@@ -40,7 +40,6 @@ rust_target_path := support/targets
 rust_sel4_target := aarch64-sel4
 rust_bare_metal_target := aarch64-unknown-none
 target_dir := $(build_dir)/target
-cargo_root_dir := $(build_dir)/cargo-root
 
 common_env := \
 	RUST_TARGET_PATH=$(abspath $(rust_target_path)) \
@@ -54,13 +53,12 @@ build_std_options := \
 	-Z build-std-features=compiler-builtins-mem
 
 remote_options := \
-	--git https://gitlab.com/coliasgroup/rust-seL4 \
-	--rev 96b27b7ed5c7ad1c53d5b7adca159d3fc5283b9e
+	--git https://gitlab.com/coliasgroup/rust-seL4
 
 ### Loader
 
 loader_crate := sel4-loader
-loader := $(cargo_root_dir)/bin/$(loader_crate)
+loader := $(build_dir)/bin/$(loader_crate)
 loader_intermediate := $(build_dir)/$(loader_crate).intermediate
 
 $(loader): $(loader_intermediate)
@@ -71,15 +69,15 @@ $(loader_intermediate):
 	CC=$(cross_compiler_prefix)gcc \
 		cargo install \
 			$(common_options) \
-			$(build_std_options) \
 			$(remote_options) \
+			$(build_std_options) \
 			--target $(rust_bare_metal_target) \
-			--root $(abspath $(cargo_root_dir)) \
+			--root $(abspath $(build_dir)) \
 			--force \
 			$(loader_crate)
 
 loader_cli_crate := sel4-loader-add-payload
-loader_cli := $(cargo_root_dir)/bin/$(loader_cli_crate)
+loader_cli := $(build_dir)/bin/$(loader_cli_crate)
 loader_cli_intermediate := $(build_dir)/$(loader_cli_crate).intermediate
 
 $(loader_cli): $(loader_cli_intermediate)
@@ -89,7 +87,7 @@ $(loader_cli_intermediate):
 	cargo install \
 		$(common_options) \
 		$(remote_options) \
-		--root $(abspath $(cargo_root_dir)) \
+		--root $(abspath $(build_dir)) \
 		--force \
 		$(loader_cli_crate)
 

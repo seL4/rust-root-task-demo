@@ -5,10 +5,6 @@ authors = ["Nick Spinale <nick.spinale@coliasgroup.com>"]
 edition = "2021"
 license = "BSD-2-Clause"
 
-[dependencies.sel4]
-git = "https://gitlab.com/coliasgroup/rust-seL4"
-rev = "96b27b7ed5c7ad1c53d5b7adca159d3fc5283b9e"
-
-[dependencies.sel4-root-task-runtime]
-git = "https://gitlab.com/coliasgroup/rust-seL4"
-rev = "96b27b7ed5c7ad1c53d5b7adca159d3fc5283b9e"
+[dependencies]
+sel4 = { git = "https://gitlab.com/coliasgroup/rust-seL4" }
+sel4-root-task = { git = "https://gitlab.com/coliasgroup/rust-seL4" }
