@@ -53,11 +53,12 @@ build_std_options := \
 	-Z build-std-features=compiler-builtins-mem
 
 remote_options := \
-	--git https://gitlab.com/coliasgroup/rust-seL4
+	--git https://gitlab.com/coliasgroup/rust-seL4 \
+	--rev 50d44e23c4035d36297a1ca5f584022e095f7077
 
 ### Loader
 
-loader_crate := sel4-loader
+loader_crate := sel4-kernel-loader
 loader := $(build_dir)/bin/$(loader_crate)
 loader_intermediate := $(build_dir)/$(loader_crate).intermediate
 
@@ -76,7 +77,7 @@ $(loader_intermediate):
 			--force \
 			$(loader_crate)
 
-loader_cli_crate := sel4-loader-add-payload
+loader_cli_crate := sel4-kernel-loader-add-payload
 loader_cli := $(build_dir)/bin/$(loader_cli_crate)
 loader_cli_intermediate := $(build_dir)/$(loader_cli_crate).intermediate
 
