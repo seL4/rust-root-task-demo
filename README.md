@@ -2,6 +2,8 @@
 
 This repository demonstrates the use of the [rust-seL4](https://gitlab.com/coliasgroup/rust-seL4) crates to construct a simple system.
 
+See comments in the files in this repository, especially [./Makefile](./Makefile), for documentation.
+
 ### Quick start
 
 The only requirements for getting started are Git, Make, and Docker.

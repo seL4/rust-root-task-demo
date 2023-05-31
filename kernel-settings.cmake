@@ -1,3 +1,5 @@
+# Basis for seL4 kernel configuration
+
 set(ARM_CPU cortex-a57 CACHE STRING "")
 set(KernelArch arm CACHE STRING "")
 set(KernelArmHypervisorSupport ON CACHE BOOL "")

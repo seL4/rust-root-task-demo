@@ -7,7 +7,10 @@ none:
 clean:
 	rm -rf $(build_dir)
 
-### Kernel
+# ## Kernel
+#
+# Install the seL4 kernel and libsel4 locally. There is nothing specific to rust-seL4 in this
+# section.
 
 kernel_source_dir := seL4
 kernel_build_dir := $(build_dir)/kernel/build
@@ -34,13 +37,15 @@ build-kernel: configure-kernel
 install-kernel: build-kernel
 	ninja -C $(kernel_build_dir) install
 
-### Common Rust definitions
+# ## Common Rust definitions
 
 rust_target_path := support/targets
 rust_sel4_target := aarch64-sel4
 rust_bare_metal_target := aarch64-unknown-none
 target_dir := $(build_dir)/target
 
+# SEL4_TARGET_PREFIX is used by build.rs scripts of various rust-seL4 crates to locate seL4
+# configuration and libsel4 headers.
 common_env := \
 	RUST_TARGET_PATH=$(abspath $(rust_target_path)) \
 	SEL4_PREFIX=$(abspath $(kernel_install_dir)) \
@@ -56,7 +61,14 @@ remote_options := \
 	--git https://gitlab.com/coliasgroup/rust-seL4 \
 	--rev 50d44e23c4035d36297a1ca5f584022e095f7077
 
-### Loader
+# ## Loader
+#
+# - `sel4-kernel-loader`: The loader binary, which expects to have a payload appended later via
+#   binary patch.
+# - `sel4-kernel-loader-add-payload`: CLI which appends a payload to the loader.
+#
+# In this Makefile, we take the approach of using `cargo install --root <somewhere local to this
+# project>` to build these `[bin]` crates.
 
 loader_crate := sel4-kernel-loader
 loader := $(build_dir)/bin/$(loader_crate)
@@ -92,7 +104,7 @@ $(loader_cli_intermediate):
 		--force \
 		$(loader_cli_crate)
 
-### Demo
+# ## Demo
 
 app_crate := example
 app := $(build_dir)/$(app_crate).elf
@@ -112,6 +124,7 @@ $(app_intermediate):
 
 image := $(build_dir)/image.elf
 
+# Append the payload to the loader using the loader CLI
 $(image): $(app) $(loader) $(loader_cli)
 	$(loader_cli) \
 		--loader $(loader) \

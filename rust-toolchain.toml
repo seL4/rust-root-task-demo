@@ -1,3 +1,5 @@
+# Match the rust toolchain with that in the rust-seL4 repository for best results.
+
 [toolchain]
 channel = "nightly-2023-05-03"
-components = [ "rustfmt", "rust-src", "rustc-dev", "llvm-tools-preview" ]
+components = [ "rustfmt", "rust-src" ]
