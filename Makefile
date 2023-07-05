@@ -31,7 +31,7 @@ build_std_options := \
 
 remote_options := \
 	--git https://github.com/coliasgroup/rust-seL4 \
-	--tag keep/a453a30908f6302e38650e2745a9f1f2
+	--rev a453a30908f6302e38650e2745a9f1f2c29ef505
 
 # ## Loader
 #
