@@ -1,6 +1,6 @@
 work_root := ..
 
-label := rust-sel4-simple-root-task-demo
+label := rust-sel4-root-task-demo
 image_repository := $(label)
 image_tag := $(image_repository)
 container_name := $(label)

@@ -6,12 +6,6 @@ RUN apt-get update -q && apt-get install -y --no-install-recommends \
     bash-completion \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo 'deb http://deb.debian.org/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list
-
-RUN apt-get update -q && apt-get install -y --no-install-recommends \
-        -t bullseye-backports \
-        cmake
-
 # Derived from:
 # https://hub.docker.com/r/rustlang/rust/dockerfile
 
@@ -30,6 +24,31 @@ RUN set -eux; \
     cargo --version; \
     rustc --version;
 
+RUN mkdir /deps
+
+WORKDIR /deps
+
+RUN git clone https://github.com/seL4/seL4.git && \
+        cd seL4 && \
+        git checkout 5091e5313d6fb79b71af4ee2be85277a07e07d65
+
+COPY kernel-settings.cmake .
+
+RUN set -eux; \
+    cd seL4; \
+	cmake \
+		-DCROSS_COMPILER_PREFIX=aarch64-linux-gnu- \
+		-DCMAKE_TOOLCHAIN_FILE=gcc.cmake \
+		-DCMAKE_INSTALL_PREFIX=install \
+		-C ../kernel-settings.cmake \
+		-G Ninja \
+		-S . \
+		-B build; \
+	ninja -C build all; \
+	ninja -C build install;
+
+ENV SEL4_INSTALL_DIR=/deps/seL4/install
+
 ARG UID
 ARG GID
 
@@ -37,7 +56,5 @@ RUN groupadd -f -g $GID x && useradd -u $UID -g $GID -G sudo -m -p x x
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers # for convenience
 
 USER x
-
-WORKDIR /home/x
 
 WORKDIR /work

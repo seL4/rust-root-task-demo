@@ -7,48 +7,20 @@ none:
 clean:
 	rm -rf $(build_dir)
 
-# ## Kernel
-#
-# Install the seL4 kernel and libsel4 locally. There is nothing specific to rust-seL4 in this
-# section.
-
-kernel_source_dir := seL4
-kernel_build_dir := $(build_dir)/kernel/build
-kernel_install_dir := $(build_dir)/kernel/install
-kernel_settings := kernel-settings.cmake
-cross_compiler_prefix := aarch64-linux-gnu-
-
-.PHONY: configure-kernel
-configure-kernel:
-	cmake \
-		-DCROSS_COMPILER_PREFIX=$(cross_compiler_prefix) \
-		-DCMAKE_TOOLCHAIN_FILE=gcc.cmake \
-		-DCMAKE_INSTALL_PREFIX=$(kernel_install_dir) \
-		-C $(kernel_settings) \
-		-G Ninja \
-		-S $(kernel_source_dir) \
-		-B $(kernel_build_dir)
-
-.PHONY: build-kernel
-build-kernel: configure-kernel
-	ninja -C $(kernel_build_dir) all
-
-.PHONY: install-kernel
-install-kernel: build-kernel
-	ninja -C $(kernel_build_dir) install
-
 # ## Common Rust definitions
 
 rust_target_path := support/targets
 rust_sel4_target := aarch64-sel4
 rust_bare_metal_target := aarch64-unknown-none
+cross_compiler_prefix := aarch64-linux-gnu-
 target_dir := $(build_dir)/target
+sel4_prefix := $(SEL4_INSTALL_DIR)
 
 # SEL4_TARGET_PREFIX is used by build.rs scripts of various rust-seL4 crates to locate seL4
 # configuration and libsel4 headers.
 common_env := \
 	RUST_TARGET_PATH=$(abspath $(rust_target_path)) \
-	SEL4_PREFIX=$(abspath $(kernel_install_dir)) \
+	SEL4_PREFIX=$(sel4_prefix)
 
 common_options := \
 	--target-dir $(abspath $(target_dir))
@@ -58,8 +30,8 @@ build_std_options := \
 	-Z build-std-features=compiler-builtins-mem
 
 remote_options := \
-	--git https://gitlab.com/coliasgroup/rust-seL4 \
-	--rev 50d44e23c4035d36297a1ca5f584022e095f7077
+	--git https://github.com/coliasgroup/rust-seL4 \
+	--tag keep/a453a30908f6302e38650e2745a9f1f2
 
 # ## Loader
 #
@@ -128,7 +100,7 @@ image := $(build_dir)/image.elf
 $(image): $(app) $(loader) $(loader_cli)
 	$(loader_cli) \
 		--loader $(loader) \
-		--sel4-prefix $(kernel_install_dir) \
+		--sel4-prefix $(sel4_prefix) \
 		--app $(app) \
 		-o $@
 
