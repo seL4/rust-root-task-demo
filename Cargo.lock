@@ -76,9 +76,9 @@ dependencies = [
 
 [[package]]
 name = "cpufeatures"
-version = "0.2.8"
+version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "03e69e28e9f7f77debdedbaafa2866e1de9ba56df55a8bd7cfc724c25a09987c"
+checksum = "a17b76ff3a4162b0b27f354a0c87015ddad39d35f9c0c36607a3bdd175dde1f1"
 dependencies = [
  "libc",
 ]
@@ -292,9 +292,21 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.8.4"
+version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d0ab3ca65655bb1e41f2a8c8cd662eb4fb035e67c3f78da1d61dffe89d07300f"
+checksum = "89089e897c013b3deb627116ae56a6955a72b8bed395c9526af31c9fe528b484"
+dependencies = [
+ "aho-corasick",
+ "memchr",
+ "regex-automata",
+ "regex-syntax",
+]
+
+[[package]]
+name = "regex-automata"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fa250384981ea14565685dea16a9ccc4d1c541a13f82b9c168572264d1df8c56"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -303,9 +315,9 @@ dependencies = [
 
 [[package]]
 name = "regex-syntax"
-version = "0.7.2"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "436b050e76ed2903236f032a59761c1eb99e1b0aead2c257922771dab1fc8c78"
+checksum = "2ab07dc67230e4a4718e70fd5c20055a4334b121f1f9db8fe63ef39ce9b8c846"
 
 [[package]]
 name = "rustc-hash"
@@ -322,7 +334,7 @@ checksum = "fe232bdf6be8c8de797b22184ee71118d63780ea42ac85b61d1baa6d3b782ae9"
 [[package]]
 name = "sel4"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "cfg-if",
  "sel4-config",
@@ -332,7 +344,7 @@ dependencies = [
 [[package]]
 name = "sel4-bitfield-parser"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "pest",
  "pest_derive",
@@ -342,17 +354,17 @@ dependencies = [
 [[package]]
 name = "sel4-bitfield-types"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 
 [[package]]
 name = "sel4-build-env"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 
 [[package]]
 name = "sel4-config"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "sel4-config-macros",
 ]
@@ -360,7 +372,7 @@ dependencies = [
 [[package]]
 name = "sel4-config-data"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "lazy_static",
  "sel4-build-env",
@@ -371,7 +383,7 @@ dependencies = [
 [[package]]
 name = "sel4-config-generic-macro-impls"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "fallible-iterator",
  "proc-macro2",
@@ -383,7 +395,7 @@ dependencies = [
 [[package]]
 name = "sel4-config-generic-types"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "serde",
 ]
@@ -391,7 +403,7 @@ dependencies = [
 [[package]]
 name = "sel4-config-macros"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "sel4-config-data",
  "sel4-config-generic-macro-impls",
@@ -400,7 +412,7 @@ dependencies = [
 [[package]]
 name = "sel4-dlmalloc"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "dlmalloc",
  "sel4-sync",
@@ -409,12 +421,12 @@ dependencies = [
 [[package]]
 name = "sel4-immediate-sync-once-cell"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 
 [[package]]
 name = "sel4-panicking"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "cfg-if",
  "sel4-immediate-sync-once-cell",
@@ -425,12 +437,12 @@ dependencies = [
 [[package]]
 name = "sel4-panicking-env"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 
 [[package]]
 name = "sel4-reserve-tls-on-stack"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "cfg-if",
  "sel4",
@@ -439,7 +451,7 @@ dependencies = [
 [[package]]
 name = "sel4-root-task"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "sel4",
  "sel4-panicking",
@@ -451,7 +463,7 @@ dependencies = [
 [[package]]
 name = "sel4-root-task-macros"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -461,7 +473,7 @@ dependencies = [
 [[package]]
 name = "sel4-runtime-common"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "cfg-if",
  "sel4-dlmalloc",
@@ -473,7 +485,7 @@ dependencies = [
 [[package]]
 name = "sel4-rustfmt-helper"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "which",
 ]
@@ -481,7 +493,7 @@ dependencies = [
 [[package]]
 name = "sel4-sync"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "sel4",
  "sel4-immediate-sync-once-cell",
@@ -490,7 +502,7 @@ dependencies = [
 [[package]]
 name = "sel4-sys"
 version = "0.1.0"
-source = "git+https://github.com/coliasgroup/rust-seL4#3e14a8d97421c97ab7e165c6f90c9efc8dc87ac9"
+source = "git+https://github.com/coliasgroup/rust-seL4#a419311b9402c5c438e6a2a7fd3c66129c510579"
 dependencies = [
  "bindgen",
  "glob",
