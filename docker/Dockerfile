@@ -36,16 +36,16 @@ COPY kernel-settings.cmake .
 
 RUN set -eux; \
     cd seL4; \
-	cmake \
-		-DCROSS_COMPILER_PREFIX=aarch64-linux-gnu- \
-		-DCMAKE_TOOLCHAIN_FILE=gcc.cmake \
-		-DCMAKE_INSTALL_PREFIX=install \
-		-C ../kernel-settings.cmake \
-		-G Ninja \
-		-S . \
-		-B build; \
-	ninja -C build all; \
-	ninja -C build install;
+    cmake \
+        -DCROSS_COMPILER_PREFIX=aarch64-linux-gnu- \
+        -DCMAKE_TOOLCHAIN_FILE=gcc.cmake \
+        -DCMAKE_INSTALL_PREFIX=install \
+        -C ../kernel-settings.cmake \
+        -G Ninja \
+        -S . \
+        -B build; \
+    ninja -C build all; \
+    ninja -C build install;
 
 ENV SEL4_INSTALL_DIR=/deps/seL4/install
 
