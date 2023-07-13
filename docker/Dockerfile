@@ -24,6 +24,8 @@ RUN set -eux; \
     cargo --version; \
     rustc --version;
 
+ENV CARGO_HOME=
+
 RUN mkdir /deps
 
 WORKDIR /deps
@@ -48,6 +50,26 @@ RUN set -eux; \
     ninja -C build install;
 
 ENV SEL4_INSTALL_DIR=/deps/seL4/install
+
+RUN set -eux; \
+    export RUSTUP_TOOLCHAIN=nightly-2023-05-03; \
+    rustup component add rust-src; \
+    url="https://github.com/coliasgroup/rust-seL4"; \
+    rev="a453a30908f6302e38650e2745a9f1f2c29ef505"; \
+    remote_options="--git $url --rev $rev"; \
+    CC=aarch64-linux-gnu-gcc \
+    SEL4_PREFIX=$SEL4_INSTALL_DIR \
+        cargo install \
+            -Z build-std=core,alloc,compiler_builtins \
+            -Z build-std-features=compiler-builtins-mem \
+            --target aarch64-unknown-none \
+            --root . \
+            $remote_options \
+            sel4-kernel-loader; \
+	cargo install \
+		--root . \
+		$remote_options \
+		sel4-kernel-loader-add-payload;
 
 ARG UID
 ARG GID
