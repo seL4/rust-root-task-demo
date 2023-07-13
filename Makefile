@@ -1,14 +1,5 @@
 build_dir := build
 
-.PHONY: none
-none:
-
-.PHONY: clean
-clean:
-	rm -rf $(build_dir)
-
-
-
 sel4_prefix := $(SEL4_INSTALL_DIR)
 
 # Kernel loader binary artifacts provided by Docker container:
@@ -18,6 +9,13 @@ sel4_prefix := $(SEL4_INSTALL_DIR)
 loader_artifacts_dir := /deps/bin
 loader := $(loader_artifacts_dir)/sel4-kernel-loader
 loader_cli := $(loader_artifacts_dir)/sel4-kernel-loader-add-payload
+
+.PHONY: none
+none:
+
+.PHONY: clean
+clean:
+	rm -rf $(build_dir)
 
 app_crate := example
 app := $(build_dir)/$(app_crate).elf
