@@ -6,25 +6,10 @@ RUN apt-get update -q && apt-get install -y --no-install-recommends \
     bash-completion \
     && rm -rf /var/lib/apt/lists/*
 
-# Derived from:
-# https://hub.docker.com/r/rustlang/rust/dockerfile
+RUN curl -sSf https://sh.rustup.rs | \
+        bash -s -- -y --no-modify-path --default-toolchain none
 
-ENV RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/usr/local/cargo \
-    PATH=/usr/local/cargo/bin:$PATH
-
-RUN set -eux; \
-    url="https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init"; \
-    wget "$url"; \
-    chmod +x rustup-init; \
-    ./rustup-init -y --no-modify-path --default-toolchain nightly; \
-    rm rustup-init; \
-    chmod -R a+w $RUSTUP_HOME $CARGO_HOME; \
-    rustup --version; \
-    cargo --version; \
-    rustc --version;
-
-ENV CARGO_HOME=
+ENV PATH=/root/.cargo/bin:$PATH
 
 RUN mkdir /deps
 
@@ -55,7 +40,7 @@ RUN set -eux; \
     export RUSTUP_TOOLCHAIN=nightly-2023-08-02; \
     rustup component add rust-src; \
     url="https://github.com/coliasgroup/rust-seL4"; \
-    rev="b5b54324f910cf44f0e896146abde8d7e27577d3"; \
+    rev="4fa7fb5e15b2c132f9ce75863caf81d78f080bc3"; \
     remote_options="--git $url --rev $rev"; \
     CC=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \
@@ -78,5 +63,11 @@ RUN groupadd -f -g $GID x && useradd -u $UID -g $GID -G sudo -m -p x x
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers # for convenience
 
 USER x
+
+# This time, for the non-root user
+RUN curl -sSf https://sh.rustup.rs | \
+        bash -s -- -y --no-modify-path --default-toolchain none
+
+ENV PATH=/home/x/.cargo/bin:$PATH
 
 WORKDIR /work
