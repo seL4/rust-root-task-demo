@@ -51,10 +51,10 @@ RUN set -eux; \
             --root . \
             $remote_options \
             sel4-kernel-loader; \
-	cargo install \
-		--root . \
-		$remote_options \
-		sel4-kernel-loader-add-payload;
+    cargo install \
+        --root . \
+        $remote_options \
+        sel4-kernel-loader-add-payload;
 
 ARG UID
 ARG GID
