@@ -1,6 +1,6 @@
-# Simple root task demo for the [seL4 crates](https://github.com/coliasgroup/rust-seL4)
+# Simple root task demo for the [seL4 crates](https://github.com/coliasgroup/rust-sel4)
 
-This repository demonstrates the use of the [seL4 crates](https://github.com/coliasgroup/rust-seL4)
+This repository demonstrates the use of the [seL4 crates](https://github.com/coliasgroup/rust-sel4)
 to construct a simple system.
 
 See comments in the files in this repository, especially [./Makefile](./Makefile), for documentation.

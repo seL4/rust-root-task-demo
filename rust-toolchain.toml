@@ -1,4 +1,4 @@
-# Match the rust toolchain with that in the rust-seL4 repository for best results.
+# Match the rust toolchain with that in the rust-sel4 repository for best results.
 
 [toolchain]
 channel = "nightly-2023-08-02"

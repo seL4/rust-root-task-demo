@@ -23,7 +23,7 @@ app_intermediate := $(build_dir)/$(app_crate).intermediate
 
 $(app): $(app_intermediate)
 
-# SEL4_TARGET_PREFIX is used by build.rs scripts of various rust-seL4 crates to locate seL4
+# SEL4_TARGET_PREFIX is used by build.rs scripts of various rust-sel4 crates to locate seL4
 # configuration and libsel4 headers.
 .INTERMDIATE: $(app_intermediate)
 $(app_intermediate):
