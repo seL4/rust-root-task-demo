@@ -1,6 +1,6 @@
 work_root := ..
 
-id := rust-sel4-sel4cp-demo
+id := rust-root-task-demo
 image_tag := $(id)
 container_name := $(id)
 
