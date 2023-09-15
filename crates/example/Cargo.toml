@@ -6,5 +6,5 @@ edition = "2021"
 license = "BSD-2-Clause"
 
 [dependencies]
-sel4 = { git = "https://github.com/coliasgroup/rust-sel4" }
-sel4-root-task = { git = "https://github.com/coliasgroup/rust-sel4" }
+sel4 = { git = "https://github.com/seL4/rust-sel4" }
+sel4-root-task = { git = "https://github.com/seL4/rust-sel4" }
