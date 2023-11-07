@@ -21,9 +21,12 @@ RUN mkdir /deps
 
 WORKDIR /deps
 
-RUN git clone https://github.com/seL4/seL4.git && \
-        cd seL4 && \
-        git checkout 5091e5313d6fb79b71af4ee2be85277a07e07d65
+RUN set -eux; \
+    git clone \
+        https://github.com/seL4/seL4.git \
+        --config advice.detachedHead=false; \
+    cd seL4; \
+    git checkout 1c7a0cb549021bc0781b49aa69359ee8d035981c;
 
 COPY kernel-settings.cmake .
 
@@ -46,7 +49,7 @@ RUN set -eux; \
     export RUSTUP_TOOLCHAIN=nightly-2023-08-02; \
     rustup component add rust-src; \
     url="https://github.com/seL4/rust-sel4"; \
-    rev="4fa7fb5e15b2c132f9ce75863caf81d78f080bc3"; \
+    rev="7a6633b85091a8fc7fbf6e500d94652b59b251e2"; \
     remote_options="--git $url --rev $rev"; \
     CC=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \
