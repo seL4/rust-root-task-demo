@@ -1,3 +1,9 @@
+#
+# Copyright 2023, Colias Group, LLC
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+
 # Match the rust toolchain with that in the rust-sel4 repository for best results.
 
 [toolchain]

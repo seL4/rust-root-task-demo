@@ -1,3 +1,9 @@
+#
+# Copyright 2023, Colias Group, LLC
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+
 # Basis for seL4 kernel configuration
 
 set(ARM_CPU cortex-a57 CACHE STRING "")
