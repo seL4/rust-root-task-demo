@@ -1,3 +1,9 @@
+#
+# Copyright 2023, Colias Group, LLC
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+
 build_dir := build
 
 sel4_prefix := $(SEL4_INSTALL_DIR)
