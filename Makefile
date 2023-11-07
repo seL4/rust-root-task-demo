@@ -4,7 +4,9 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
-build_dir := build
+BUILD ?= build
+
+build_dir := $(BUILD)
 
 sel4_prefix := $(SEL4_INSTALL_DIR)
 
@@ -52,10 +54,17 @@ $(image): $(app) $(loader) $(loader_cli)
 		--app $(app) \
 		-o $@
 
-.PHONY: run
-run: $(image)
+qemu_cmd := \
 	qemu-system-aarch64 \
 		-machine virt,virtualization=on \
 		-cpu cortex-a57 -smp 2 -m 1024 \
 		-nographic -serial mon:stdio \
-		-kernel $<
+		-kernel $(image)
+
+.PHONY: run
+run: $(image)
+	$(qemu_cmd)
+
+.PHONY: test
+test: test.py $(image)
+	python3 $< $(qemu_cmd)
