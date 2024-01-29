@@ -46,10 +46,10 @@ RUN set -eux; \
 ENV SEL4_INSTALL_DIR=/deps/seL4/install
 
 RUN set -eux; \
-    export RUSTUP_TOOLCHAIN=nightly-2023-08-02; \
+    export RUSTUP_TOOLCHAIN=nightly-2024-01-06; \
     rustup component add rust-src; \
     url="https://github.com/seL4/rust-sel4"; \
-    rev="7a6633b85091a8fc7fbf6e500d94652b59b251e2"; \
+    rev="50ebd98da084fa685962b611c6d2ad3d6a72c4aa"; \
     remote_options="--git $url --rev $rev"; \
     CC=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \
