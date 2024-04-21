@@ -7,7 +7,6 @@
 FROM trustworthysystems/sel4
 
 RUN apt-get update -q && apt-get install -y --no-install-recommends \
-    wget \
     sudo man vim \
     bash-completion \
     && rm -rf /var/lib/apt/lists/*
@@ -26,17 +25,17 @@ RUN set -eux; \
         https://github.com/seL4/seL4.git \
         --config advice.detachedHead=false; \
     cd seL4; \
-    git checkout 1c7a0cb549021bc0781b49aa69359ee8d035981c;
-
-COPY kernel-settings.cmake .
+    git checkout a58480425c5b4c7a3d5000c797f083bc7d5fd532;
 
 RUN set -eux; \
     cd seL4; \
     cmake \
         -DCROSS_COMPILER_PREFIX=aarch64-linux-gnu- \
-        -DCMAKE_TOOLCHAIN_FILE=gcc.cmake \
         -DCMAKE_INSTALL_PREFIX=install \
-        -C ../kernel-settings.cmake \
+        -DKernelPlatform=qemu-arm-virt \
+        -DKernelArmHypervisorSupport=ON \
+        -DKernelVerificationBuild=OFF \
+        -DARM_CPU=cortex-a57 \
         -G Ninja \
         -S . \
         -B build; \
@@ -46,15 +45,15 @@ RUN set -eux; \
 ENV SEL4_INSTALL_DIR=/deps/seL4/install
 
 RUN set -eux; \
-    export RUSTUP_TOOLCHAIN=nightly-2024-01-06; \
+    export RUSTUP_TOOLCHAIN=nightly-2024-03-09; \
     rustup component add rust-src; \
     url="https://github.com/seL4/rust-sel4"; \
-    rev="50ebd98da084fa685962b611c6d2ad3d6a72c4aa"; \
+    rev="a20aab14c0533d3145a2db75020e60151ce9b78f"; \
     remote_options="--git $url --rev $rev"; \
     CC=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \
         cargo install \
-            -Z build-std=core,alloc,compiler_builtins \
+            -Z build-std=core,compiler_builtins \
             -Z build-std-features=compiler-builtins-mem \
             --target aarch64-unknown-none \
             --root . \
