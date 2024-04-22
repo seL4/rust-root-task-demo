@@ -67,10 +67,17 @@ RUN set -eux; \
 ARG UID
 ARG GID
 
-RUN groupadd -f -g $GID x && useradd -u $UID -g $GID -G sudo -m -p x x
+RUN set -eux; \
+    if ! getent group $GID; then \
+        groupadd -g $GID x; \
+    fi; \
+    if ! getent passwd $UID; then \
+        useradd -u $UID -g $GID -G sudo -m -p x x; \
+    fi;
+
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers # for convenience
 
-USER x
+USER $UID:$GID
 
 # This time, for the non-root user
 RUN curl -sSf https://sh.rustup.rs | \
