@@ -8,16 +8,6 @@ BUILD ?= build
 
 build_dir := $(BUILD)
 
-sel4_prefix := $(SEL4_INSTALL_DIR)
-
-# Kernel loader binary artifacts provided by Docker container:
-# - `sel4-kernel-loader`: The loader binary, which expects to have a payload appended later via
-#   binary patch.
-# - `sel4-kernel-loader-add-payload`: CLI which appends a payload to the loader.
-loader_artifacts_dir := /deps/bin
-loader := $(loader_artifacts_dir)/sel4-kernel-loader
-loader_cli := $(loader_artifacts_dir)/sel4-kernel-loader-add-payload
-
 .PHONY: none
 none:
 
@@ -25,23 +15,32 @@ none:
 clean:
 	rm -rf $(build_dir)
 
+sel4_prefix := $(SEL4_INSTALL_DIR)
+
+# Kernel loader binary artifacts provided by Docker container:
+# - `sel4-kernel-loader`: The loader binary, which expects to have a payload appended later via
+#   binary patch.
+# - `sel4-kernel-loader-add-payload`: CLI which appends a payload to the loader.
+loader_artifacts_dir := $(SEL4_INSTALL_DIR)/bin
+loader := $(loader_artifacts_dir)/sel4-kernel-loader
+loader_cli := $(loader_artifacts_dir)/sel4-kernel-loader-add-payload
+
 app_crate := example
 app := $(build_dir)/$(app_crate).elf
-app_intermediate := $(build_dir)/$(app_crate).intermediate
 
-$(app): $(app_intermediate)
+$(app): $(app).intermediate
 
 # SEL4_TARGET_PREFIX is used by build.rs scripts of various rust-sel4 crates to locate seL4
 # configuration and libsel4 headers.
-.INTERMDIATE: $(app_intermediate)
-$(app_intermediate):
+.INTERMDIATE: $(app).intermediate
+$(app).intermediate:
 	SEL4_PREFIX=$(sel4_prefix) \
 		cargo build \
 			-Z build-std=core,alloc,compiler_builtins \
 			-Z build-std-features=compiler-builtins-mem \
-			--target aarch64-sel4 \
-			--target-dir $(abspath $(build_dir)/target) \
+			--target-dir $(build_dir)/target \
 			--out-dir $(build_dir) \
+			--target aarch64-sel4 \
 			-p $(app_crate)
 
 image := $(build_dir)/image.elf
@@ -56,8 +55,9 @@ $(image): $(app) $(loader) $(loader_cli)
 
 qemu_cmd := \
 	qemu-system-aarch64 \
-		-machine virt,virtualization=on -cpu cortex-a57 -m 1024 \
-		-nographic -serial mon:stdio \
+		-machine virt,virtualization=on -cpu cortex-a57 -m size=1G \
+		-serial mon:stdio \
+		-nographic \
 		-kernel $(image)
 
 .PHONY: run

@@ -6,33 +6,37 @@
 
 FROM trustworthysystems/sel4
 
+WORKDIR /tmp
+
+RUN rm -r *
+
 RUN apt-get update -q && apt-get install -y --no-install-recommends \
-    sudo man vim \
-    bash-completion \
+    bash-completion man sudo \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sSf https://sh.rustup.rs | \
-        bash -s -- -y --no-modify-path --default-toolchain none
+        bash -s -- -y --no-modify-path \
+            --default-toolchain nightly-2024-05-01 \
+            --component rust-src
 
 ENV PATH=/root/.cargo/bin:$PATH
 
-RUN mkdir /deps
-
-WORKDIR /deps
+ENV SEL4_INSTALL_DIR=/opt/seL4
 
 RUN set -eux; \
     git clone \
         https://github.com/seL4/seL4.git \
         --config advice.detachedHead=false; \
     cd seL4; \
-    git checkout a58480425c5b4c7a3d5000c797f083bc7d5fd532;
+    git checkout 0260fba168b74dd2504c9447f2fa8da1161ead87;
 
 RUN set -eux; \
     cd seL4; \
     cmake \
         -DCROSS_COMPILER_PREFIX=aarch64-linux-gnu- \
-        -DCMAKE_INSTALL_PREFIX=install \
+        -DCMAKE_INSTALL_PREFIX=$SEL4_INSTALL_DIR \
         -DKernelPlatform=qemu-arm-virt \
+        # TODO further develop kernel loader to make KernelArmHypervisorSupport=ON unecessary
         -DKernelArmHypervisorSupport=ON \
         -DKernelVerificationBuild=OFF \
         -DARM_CPU=cortex-a57 \
@@ -40,48 +44,54 @@ RUN set -eux; \
         -S . \
         -B build; \
     ninja -C build all; \
-    ninja -C build install;
-
-ENV SEL4_INSTALL_DIR=/deps/seL4/install
+    ninja -C build install; \
+    rm -rf $(pwd);
 
 RUN set -eux; \
-    export RUSTUP_TOOLCHAIN=nightly-2024-03-09; \
-    rustup component add rust-src; \
     url="https://github.com/seL4/rust-sel4"; \
     rev="a20aab14c0533d3145a2db75020e60151ce9b78f"; \
-    remote_options="--git $url --rev $rev"; \
-    CC=aarch64-linux-gnu-gcc \
+    common_args="--git $url --rev $rev --root $SEL4_INSTALL_DIR"; \
+    CC_aarch64_unknown_none=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \
         cargo install \
             -Z build-std=core,compiler_builtins \
             -Z build-std-features=compiler-builtins-mem \
             --target aarch64-unknown-none \
-            --root . \
-            $remote_options \
+            $common_args \
             sel4-kernel-loader; \
     cargo install \
-        --root . \
-        $remote_options \
+        $common_args \
         sel4-kernel-loader-add-payload;
 
 ARG UID
 ARG GID
 
 RUN set -eux; \
-    if ! getent group $GID; then \
-        groupadd -g $GID x; \
-    fi; \
-    if ! getent passwd $UID; then \
-        useradd -u $UID -g $GID -G sudo -m -p x x; \
+    if [ $UID -eq 0 ]; then \
+        if [ $GID -ne 0 ]; then \
+            echo "error: \$UID == 0 but \$GID != 0" >&2; \
+            exit 1; \
+        fi; \
+    else \
+        if getent passwd $UID; then \
+            echo "error: \$UID $UID already exists" >&2; \
+            exit 1; \
+        fi; \
+        if ! getent group $GID; then \
+            groupadd --gid $GID x; \
+        fi; \
+        useradd --uid $UID --gid $GID --groups sudo --create-home x; \
     fi;
 
-RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers # for convenience
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-USER $UID:$GID
+USER $UID
 
-# This time, for the non-root user
-RUN curl -sSf https://sh.rustup.rs | \
-        bash -s -- -y --no-modify-path --default-toolchain none
+RUN set -eux; \
+    if [ $UID -ne 0 ]; then \
+        curl -sSf https://sh.rustup.rs | \
+            bash -s -- -y --no-modify-path --default-toolchain none; \
+    fi;
 
 ENV PATH=/home/x/.cargo/bin:$PATH
 
