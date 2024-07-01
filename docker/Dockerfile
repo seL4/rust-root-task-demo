@@ -28,7 +28,7 @@ RUN set -eux; \
         https://github.com/seL4/seL4.git \
         --config advice.detachedHead=false; \
     cd seL4; \
-    git checkout 0260fba168b74dd2504c9447f2fa8da1161ead87;
+    git checkout cd6d3b8c25d49be2b100b0608cf0613483a6fffa;
 
 RUN set -eux; \
     cd seL4; \
@@ -36,7 +36,6 @@ RUN set -eux; \
         -DCROSS_COMPILER_PREFIX=aarch64-linux-gnu- \
         -DCMAKE_INSTALL_PREFIX=$SEL4_INSTALL_DIR \
         -DKernelPlatform=qemu-arm-virt \
-        # TODO further develop kernel loader to make KernelArmHypervisorSupport=ON unecessary
         -DKernelArmHypervisorSupport=ON \
         -DKernelVerificationBuild=OFF \
         -DARM_CPU=cortex-a57 \
@@ -49,7 +48,7 @@ RUN set -eux; \
 
 RUN set -eux; \
     url="https://github.com/seL4/rust-sel4"; \
-    rev="a20aab14c0533d3145a2db75020e60151ce9b78f"; \
+    rev="be7d740dc70e8f438b31cb6a069261a5b5af109d"; \
     common_args="--git $url --rev $rev --root $SEL4_INSTALL_DIR"; \
     CC_aarch64_unknown_none=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \
