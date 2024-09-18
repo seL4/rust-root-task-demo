@@ -34,14 +34,10 @@ $(app): $(app).intermediate
 # configuration and libsel4 headers.
 .INTERMDIATE: $(app).intermediate
 $(app).intermediate:
-	SEL4_PREFIX=$(sel4_prefix) \
-		cargo build \
-			-Z build-std=core,alloc,compiler_builtins \
-			-Z build-std-features=compiler-builtins-mem \
-			--target-dir $(build_dir)/target \
-			--out-dir $(build_dir) \
-			--target aarch64-sel4 \
-			-p $(app_crate)
+	cargo build \
+		--target-dir $(build_dir)/target \
+		--artifact-dir $(build_dir) \
+		-p $(app_crate)
 
 image := $(build_dir)/image.elf
 
