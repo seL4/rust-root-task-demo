@@ -4,8 +4,14 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
-[unstable]
-unstable-options = true
-
 [env]
 RUST_TARGET_PATH = { value = "support/targets", relative = true }
+SEL4_PREFIX = { value = "/opt/seL4", relative = false }
+
+[build]
+target = "aarch64-sel4"
+
+[unstable]
+unstable-options = true
+build-std = ["core", "alloc", "compiler_builtins"]
+build-std-features = ["compiler-builtins-mem"]
