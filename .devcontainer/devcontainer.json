@@ -1,0 +1,23 @@
+//
+// Copyright 2024, Colias Group, LLC
+//
+// SPDX-License-Identifier: BSD-2-Clause
+//
+
+{
+    "name": "rust-root-task-demo",
+    "image": "rust-root-task-demo",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "rust-lang.rust-analyzer"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": null,
+                "rust-analyzer.check.allTargets": false,
+                "rust-analyzer.cargo.allTargets": false
+            }
+        }
+    }
+}
