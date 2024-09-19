@@ -4,15 +4,35 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
-FROM trustworthysystems/sel4
-
-WORKDIR /tmp
-
-RUN rm -r *
+FROM debian:bookworm
 
 RUN apt-get update -q && apt-get install -y --no-install-recommends \
-    bash-completion man sudo \
+    build-essential \
+    curl \
+    git \
+    # for seL4
+    gcc-aarch64-linux-gnu \
+    python3-dev \
+    python3-venv \
+    cmake \
+    ninja-build \
+    device-tree-compiler \
+    libxml2-utils \
+    qemu-utils \
+    qemu-system-arm \
+    qemu-efi-aarch64 \
+    ipxe-qemu \
+    # for bindgen
+    libclang-dev \
+    # for test script
+    python3-pexpect \
+    # for hacking
+    bash-completion \
+    man \
+    sudo \
     && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp
 
 RUN curl -sSf https://sh.rustup.rs | \
         bash -s -- -y --no-modify-path \
@@ -32,6 +52,9 @@ RUN set -eux; \
 
 RUN set -eux; \
     cd seL4; \
+    python3 -m venv pyenv; \
+    export PATH=$(realpath ./pyenv/bin):$PATH; \
+    pip install tools/python-deps; \
     cmake \
         -DCROSS_COMPILER_PREFIX=aarch64-linux-gnu- \
         -DCMAKE_INSTALL_PREFIX=$SEL4_INSTALL_DIR \
