@@ -117,4 +117,6 @@ RUN set -eux; \
 
 ENV PATH=/home/x/.cargo/bin:$PATH
 
+ENV SHELL=/bin/bash
+
 WORKDIR /work
