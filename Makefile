@@ -34,10 +34,11 @@ $(app): $(app).intermediate
 # configuration and libsel4 headers.
 .INTERMDIATE: $(app).intermediate
 $(app).intermediate:
-	cargo build \
-		--target-dir $(build_dir)/target \
-		--artifact-dir $(build_dir) \
-		-p $(app_crate)
+	SEL4_PREFIX=$(sel4_prefix) \
+		cargo build \
+			--target-dir $(build_dir)/target \
+			--artifact-dir $(build_dir) \
+			-p $(app_crate)
 
 image := $(build_dir)/image.elf
 

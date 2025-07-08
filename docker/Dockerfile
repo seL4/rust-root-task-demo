@@ -34,9 +34,11 @@ RUN apt-get update -q && apt-get install -y --no-install-recommends \
 
 WORKDIR /tmp
 
+ARG RUSTUP_CHANNEL
+
 RUN curl -sSf https://sh.rustup.rs | \
         bash -s -- -y --no-modify-path \
-            --default-toolchain nightly-2024-09-01 \
+            --default-toolchain $RUSTUP_CHANNEL \
             --component rust-src
 
 ENV PATH=/root/.cargo/bin:$PATH
@@ -71,7 +73,7 @@ RUN set -eux; \
 
 RUN set -eux; \
     url="https://github.com/seL4/rust-sel4"; \
-    rev="1cd063a0f69b2d2045bfa224a36c9341619f0e9b"; \
+    rev="3248eeed830a163e90cffc143d7cd173267c3bf5"; \
     common_args="--git $url --rev $rev --root $SEL4_INSTALL_DIR"; \
     CC_aarch64_unknown_none=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \

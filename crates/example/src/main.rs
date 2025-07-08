@@ -34,15 +34,15 @@ fn main(bootinfo: &sel4::BootInfoPtr) -> sel4::Result<Never> {
 
     untyped.untyped_retype(
         &blueprint,
-        &cnode.relative_self(),
+        &cnode.absolute_cptr_for_self(),
         unbadged_notification_slot.index(),
         1,
     )?;
 
     let badge = 0x1337;
 
-    cnode.relative(badged_notification_slot.cptr()).mint(
-        &cnode.relative(unbadged_notification_slot.cptr()),
+    cnode.absolute_cptr(badged_notification_slot.cptr()).mint(
+        &cnode.absolute_cptr(unbadged_notification_slot.cptr()),
         sel4::CapRights::write_only(),
         badge,
     )?;
