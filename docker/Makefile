@@ -13,13 +13,17 @@ container_name := $(id)
 uid := $(shell id -u)
 gid := $(shell id -g)
 
+rustup_channel = $(shell sed -nr 's,channel = "(.*)",\1,p' $(work_root)/rust-toolchain.toml)
+
 .PHONY: none
 none:
 
 .PHONY: build
 build:
 	docker build \
-		--build-arg UID=$(uid) --build-arg GID=$(gid) \
+		--build-arg UID=$(uid) \
+		--build-arg GID=$(gid) \
+		--build-arg RUSTUP_CHANNEL=$(rustup_channel) \
 		-t $(image_tag) .
 
 .PHONY: run
