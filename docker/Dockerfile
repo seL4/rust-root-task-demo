@@ -50,7 +50,7 @@ RUN set -eux; \
         https://github.com/seL4/seL4.git \
         --config advice.detachedHead=false; \
     cd seL4; \
-    git checkout cd6d3b8c25d49be2b100b0608cf0613483a6fffa;
+    git checkout fdf7f2a0823330615dfb6b3ae6706403217e74ea;
 
 RUN set -eux; \
     cd seL4; \
@@ -73,7 +73,7 @@ RUN set -eux; \
 
 RUN set -eux; \
     url="https://github.com/seL4/rust-sel4"; \
-    rev="3248eeed830a163e90cffc143d7cd173267c3bf5"; \
+    rev="027e3eb33327a8dc69df4cd517694295e80574f3"; \
     common_args="--git $url --rev $rev --root $SEL4_INSTALL_DIR"; \
     CC_aarch64_unknown_none=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \
