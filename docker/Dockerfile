@@ -45,12 +45,7 @@ ENV PATH=/root/.cargo/bin:$PATH
 
 ENV SEL4_INSTALL_DIR=/opt/seL4
 
-RUN set -eux; \
-    git clone \
-        https://github.com/seL4/seL4.git \
-        --config advice.detachedHead=false; \
-    cd seL4; \
-    git checkout fdf7f2a0823330615dfb6b3ae6706403217e74ea;
+RUN git clone --branch 14.0.0 https://github.com/seL4/seL4.git
 
 RUN set -eux; \
     cd seL4; \
@@ -73,7 +68,7 @@ RUN set -eux; \
 
 RUN set -eux; \
     url="https://github.com/seL4/rust-sel4"; \
-    rev="027e3eb33327a8dc69df4cd517694295e80574f3"; \
+    rev="2c9786744900433f37e803c25ab208835a802cf3"; \
     common_args="--git $url --rev $rev --root $SEL4_INSTALL_DIR"; \
     CC_aarch64_unknown_none=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \
