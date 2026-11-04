@@ -45,7 +45,7 @@ ENV PATH=/root/.cargo/bin:$PATH
 
 ENV SEL4_INSTALL_DIR=/opt/seL4
 
-RUN git clone --branch 15.0.0 https://github.com/seL4/seL4.git
+RUN git clone --branch 17.0.0 https://github.com/seL4/seL4.git
 
 RUN set -eux; \
     cd seL4; \
@@ -68,12 +68,12 @@ RUN set -eux; \
 
 RUN set -eux; \
     url="https://github.com/seL4/rust-sel4"; \
-    rev="7a2321f2d84310ba7a09fe7f5988e6dcecde3566"; \
-    common_args="--git $url --rev $rev --root $SEL4_INSTALL_DIR"; \
+    tag="v6.0.0"; \
+    common_args="--git $url --tag $tag --root $SEL4_INSTALL_DIR"; \
     CC_aarch64_unknown_none=aarch64-linux-gnu-gcc \
     SEL4_PREFIX=$SEL4_INSTALL_DIR \
         cargo install \
-            -Z build-std=core,compiler_builtins \
+            -Z build-std=core,alloc,compiler_builtins \
             -Z build-std-features=compiler-builtins-mem \
             --target aarch64-unknown-none \
             $common_args \
